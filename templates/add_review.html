@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add Review</h1>
+<form method="post">
+  <p>Name: <input type="text" name="item_name"></p>
+  <p>Category: 
+    <select name="category">
+      <option value="Music">Music</option>
+      <option value="Movies">Movies</option>
+      <option value="Series">Series</option>
+      <option value="Videogames">Videogames</option>
+    </select>
+  </p>
+  <p>Review:<br>
+     <textarea name="review_text" rows="5" cols="40"></textarea></p>
+  <p><input type="submit" value="Submit Review"></p>
+</form>
+{% endblock %}

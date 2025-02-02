@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Entry</h1>
+<form method="post">
+  <p>Title: <input type="text" name="title" value="{{ entry['title'] }}"></p>
+  <p>Content: <textarea name="content">{{ entry['content'] }}</textarea></p>
+  <p><input type="submit" value="Update Entry"></p>
+</form>
+<p><a href="{{ url_for('index') }}">Back to entries</a></p>
+{% endblock %}

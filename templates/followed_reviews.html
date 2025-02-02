@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Reviews from Users You Follow</h1>
+<ul>
+  {% for review in reviews %}
+    <li>
+      <strong>{{ review['item_name'] }}</strong> ({{ review['category'] }})<br>
+      {{ review['review_text'] }}<br>
+      by <a href="{{ url_for('profile', user_id=review['user_id']) }}">{{ review['username'] or 'Unknown' }}</a>
+    </li>
+  {% endfor %}
+</ul>
+<p><a href="{{ url_for('index') }}">Back to all reviews</a></p>
+{% endblock %}

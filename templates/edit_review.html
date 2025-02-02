@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Review</h1>
+<form method="post">
+  <p>Item Name: <input type="text" name="item_name" value="{{ review['item_name'] }}"></p>
+  <p>Category: 
+    <select name="category">
+      <option value="Music" {% if review['category'] == 'Music' %}selected{% endif %}>Music</option>
+      <option value="Movies" {% if review['category'] == 'Movies' %}selected{% endif %}>Movies</option>
+      <option value="Series" {% if review['category'] == 'Series' %}selected{% endif %}>Series</option>
+      <option value="Videogames" {% if review['category'] == 'Videogames' %}selected{% endif %}>Videogames</option>
+    </select>
+  </p>
+  <p>Review:<br>
+     <textarea name="review_text" rows="5" cols="40">{{ review['review_text'] }}</textarea></p>
+  <p><input type="submit" value="Update Review"></p>
+</form>
+<p><a href="{{ url_for('index') }}">Back to reviews</a></p>
+{% endblock %}
