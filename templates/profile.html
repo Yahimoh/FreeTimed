@@ -1,6 +1,16 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>{{ profile['username'] }}'s Profile</h1>
+
+<div class="stats">
+    <p><strong>User Stats:</strong></p>
+    <ul>
+        <li>Total Reviews by {{ profile['username'] }}: {{ user_reviews_count }}</li>
+        <li>Percentage of Site Reviews: {{ "%.1f"|format(user_reviews_count / total_reviews * 100) }}%</li>
+        <li>Total Reviews on Site: {{ total_reviews }}</li>
+    </ul>
+</div>
+
 {% if session.get('user_id') and session.get('user_id') != profile['id'] %}
   {% if is_following %}
     <form action="{{ url_for('unfollow', user_id=profile['id']) }}" method="post">

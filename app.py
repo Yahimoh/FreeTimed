@@ -156,12 +156,17 @@ def profile(user_id):
     if not user:
         flash("User not found.")
         return redirect(url_for('index'))
+    
+    reviews = db.execute("SELECT * FROM reviews WHERE user_id = ? ORDER BY id DESC", (user_id,)).fetchall()
+    user_reviews_count = len(reviews)
+    total_reviews = db.execute("SELECT COUNT(*) as count FROM reviews").fetchone()['count']
+
     reviews = db.execute("SELECT * FROM reviews WHERE user_id = ? ORDER BY id DESC", (user_id,)).fetchall()
     is_following = False
     if 'user_id' in session and session['user_id'] != user_id:
         is_following = db.execute("SELECT * FROM followers WHERE follower_id = ? AND followed_id = ?",
                                   (session['user_id'], user_id)).fetchone() is not None
-    return render_template('profile.html', profile=user, reviews=reviews, is_following=is_following)
+    return render_template('profile.html', profile=user, reviews=reviews, is_following=is_following, user_reviews_count=user_reviews_count, total_reviews=total_reviews)
 
 @app.route('/follow/<int:user_id>', methods=['POST'])
 def follow(user_id):
