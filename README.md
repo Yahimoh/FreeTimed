@@ -31,3 +31,4 @@
 
 - **Seing new profiles:**  
   Users can view newly created profiles.
+  Users can see other profiles review stats.
