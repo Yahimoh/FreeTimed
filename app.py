@@ -1,6 +1,7 @@
 import os
 import sqlite3
-from flask import Flask, request, redirect, url_for, session, flash, render_template, g
+import secrets
+from flask import Flask, request, redirect, url_for, session, flash, render_template, g, abort
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'a9b8c7d6e5f4g3h2i1j0k9l8m7n6o5p4'
@@ -71,6 +72,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             session['username'] = user['username']
+            session['csrf_token'] = secrets.token_hex(16)
             flash("Logged in successfully.")
             return redirect(url_for('index'))
         else:
@@ -84,12 +86,20 @@ def logout():
     flash("Logged out.")
     return redirect(url_for('index'))
 
+def check_csrf():
+    if request.method == 'POST':
+        if 'csrf_token' not in session or 'csrf_token' not in request.form:
+            abort(403)
+        if request.form['csrf_token'] != session['csrf_token']:
+            abort(403)
+
 @app.route('/review/add', methods=['GET', 'POST'])
 def add_review():
     if 'user_id' not in session:
         flash("Please log in to add a review.")
         return redirect(url_for('login'))
     if request.method == 'POST':
+        check_csrf()
         item_name = request.form['item_name']
         category = request.form['category']
         review_text = request.form['review_text']
@@ -118,6 +128,7 @@ def edit_review(review_id):
         flash("You can only edit your own reviews.")
         return redirect(url_for('index'))
     if request.method == 'POST':
+        check_csrf()
         item_name = request.form['item_name']
         category = request.form['category']
         review_text = request.form['review_text']
@@ -136,6 +147,7 @@ def delete_review(review_id):
     if 'user_id' not in session:
         flash("Please log in to delete a review.")
         return redirect(url_for('login'))
+    check_csrf()
     db = get_db()
     review = db.execute("SELECT * FROM reviews WHERE id = ?", (review_id,)).fetchone()
     if not review:
@@ -173,6 +185,7 @@ def follow(user_id):
     if 'user_id' not in session:
         flash("Please log in to follow users.")
         return redirect(url_for('login'))
+    check_csrf()
     if session['user_id'] == user_id:
         flash("You cannot follow yourself.")
         return redirect(url_for('profile', user_id=user_id))
@@ -192,6 +205,7 @@ def unfollow(user_id):
     if 'user_id' not in session:
         flash("Please log in to unfollow users.")
         return redirect(url_for('login'))
+    check_csrf()
     db = get_db()
     db.execute("DELETE FROM followers WHERE follower_id = ? AND followed_id = ?",
                (session['user_id'], user_id))

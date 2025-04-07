@@ -2,6 +2,7 @@
 {% block content %}
 <h1>Add Review</h1>
 <form method="post">
+  <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
   <p>Name: <input type="text" name="item_name"></p>
   <p>Category: 
     <select name="category">

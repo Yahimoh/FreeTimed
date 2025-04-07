@@ -14,10 +14,12 @@
 {% if session.get('user_id') and session.get('user_id') != profile['id'] %}
   {% if is_following %}
     <form action="{{ url_for('unfollow', user_id=profile['id']) }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <button type="submit">Unfollow</button>
     </form>
   {% else %}
     <form action="{{ url_for('follow', user_id=profile['id']) }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <button type="submit">Follow</button>
     </form>
   {% endif %}
