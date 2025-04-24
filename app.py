@@ -236,5 +236,22 @@ def new_profiles():
 
     return render_template('new_profiles.html', profiles=profiles)
 
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('query', '')
+    if not query:
+        return redirect(url_for('index'))
+    
+    db = get_db()
+    reviews = db.execute("""
+        SELECT reviews.*, users.username 
+        FROM reviews 
+        LEFT JOIN users ON reviews.user_id = users.id
+        WHERE reviews.item_name LIKE ? OR reviews.review_text LIKE ? OR reviews.category LIKE ?
+        ORDER BY reviews.id DESC
+    """, (f'%{query}%', f'%{query}%', f'%{query}%')).fetchall()
+    
+    return render_template('search_results.html', reviews=reviews, query=query)
+
 if __name__ == '__main__':
     app.run(debug=True)
