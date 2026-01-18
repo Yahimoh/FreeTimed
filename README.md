@@ -1,4 +1,4 @@
-# FreeTime'd
+# FreeTimed
 
 ## Planned eatures ##
 * User can submit reviews on recently seen or listened stuff like:
