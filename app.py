@@ -1,10 +1,21 @@
 import os
 import sqlite3
 import secrets
+import hashlib
 from flask import Flask, request, redirect, url_for, session, flash, render_template, g, abort
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'a9b8c7d6e5f4g3h2i1j0k9l8m7n6o5p4'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', secrets.token_hex(32))
+
+def hash_password(password):
+    salt = secrets.token_hex(16)
+    pw_hash = hashlib.sha256((salt + password).encode()).hexdigest()
+    return f"{salt}:{pw_hash}"
+
+def verify_password(stored, password):
+    salt, pw_hash = stored.split(':')
+    return hashlib.sha256((salt + password).encode()).hexdigest() == pw_hash
+
 DATABASE = 'database.db'
 
 def get_db():
@@ -52,7 +63,7 @@ def register():
         db = get_db()
         try:
             db.execute("INSERT INTO users (username, password) VALUES (?, ?)",
-                       (username, password))
+                       (username, hash_password(password)))
             db.commit()
             flash("Registration successful. Please log in.")
             return redirect(url_for('login'))
@@ -68,7 +79,7 @@ def login():
         password = request.form['password']
         db = get_db()
         user = db.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
-        if user and user['password'] == password:
+        if user and verify_password(user['password'], password):
             session.clear()
             session['user_id'] = user['id']
             session['username'] = user['username']

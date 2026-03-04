@@ -1,6 +1,42 @@
 # FreeTimed
 
-## Planned eatures ##
+## Setup Instructions
+
+1. Clone the repository:
+   ```
+   git clone <repository-url>
+   cd FreeTimed
+   ```
+
+2. Create a virtual environment:
+   ```
+   python3 -m venv venv
+   ```
+
+3. Activate the virtual environment:
+   ```
+   source venv/bin/activate
+   ```
+   Note: Use `source` — running `venv/bin/activate` directly will not work.
+
+4. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+5. Set the secret key environment variable:
+   ```
+   export SECRET_KEY=$(python3 -c "import secrets; print(secrets.token_hex(32))")
+   ```
+
+6. Run the application:
+   ```
+   flask run
+   ```
+
+7. Open http://127.0.0.1:5000 in your browser.
+
+## Planned Features ##
 * User can submit reviews on recently seen or listened stuff like:
   * Music
   * Movies

@@ -2,30 +2,36 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FreeTime'd</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   </head>
   <body>
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        <ul style="color: rgb(169, 7, 224);">
-          {% for message in messages %}
-            <li>{{ message }}</li>
-          {% endfor %}
-        </ul>
-      {% endif %}
-    {% endwith %}
     <nav>
-      <a href="{{ url_for('index') }}">Home</a>
-      {% if session.get('user_id') %}
-        | <a href="{{ url_for('add_review') }}">Add Review</a>
-        | <a href="{{ url_for('followed_reviews') }}">Followed Reviews</a>
-        | <a href="{{ url_for('new_profiles') }}">New Profiles</a> 
-        | <a href="{{ url_for('logout') }}">Logout</a>
-      {% else %}
-        | <a href="{{ url_for('login') }}">Login</a> | <a href="{{ url_for('register') }}">Register</a>
-      {% endif %}
+      <div class="container">
+        <a href="{{ url_for('index') }}">Home</a>
+        {% if session.get('user_id') %}
+          <a href="{{ url_for('add_review') }}">Add Review</a>
+          <a href="{{ url_for('followed_reviews') }}">Followed Reviews</a>
+          <a href="{{ url_for('new_profiles') }}">New Profiles</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+          <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+      </div>
     </nav>
-    <hr>
-    {% block content %}{% endblock %}
+    <div class="container">
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class="flash-messages">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </div>
   </body>
 </html>
